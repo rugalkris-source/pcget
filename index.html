@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA - High-End Luxury PC Store</title>
+    <!-- Liên kết đến file CSS riêng -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Header Navigation -->
+    <header>
+        <div class="nav-container">
+            <div class="logo">AURA <span>PC</span></div>
+            <ul class="nav-links">
+                <li class="nav-item active" onclick="switchView('home-view', this)">Trang Chủ</li>
+                <li class="nav-item" onclick="switchView('history-view', this)">Lịch Sử Mua</li>
+                <li class="nav-item" onclick="switchView('admin-view', this)">Quản Lý (Admin)</li>
+            </ul>
+            <div class="cart-icon" onclick="toggleCartModal()">
+                🛒 <span class="cart-badge" id="cart-count">0</span>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- VIEW 1: TRANG CHỦ & TÌM KIẾM BỘ LỌC -->
+        <section id="home-view" class="view-section active">
+            <div class="hero">
+                <h1>AURA LUXURY COMPUTING</h1>
+                <p>Đỉnh cao công nghệ - Thiết kế sang trọng - Hiệu năng tuyệt đối dành cho Doanh nhân & Gamer đẳng cấp.
+                </p>
+                <button class="btn"
+                    onclick="document.getElementById('products-start').scrollIntoView({behavior: 'smooth'})">Khám Phá
+                    Ngay</button>
+            </div>
+
+            <div id="products-start"></div>
+
+            <!-- Bộ Lọc Sản Phẩm -->
+            <div class="filter-container">
+                <div class="filter-group">
+                    <input type="text" id="search-input" placeholder="Tìm tên máy tính, CPU, GPU..."
+                        oninput="applyFilters()">
+                </div>
+                <div class="filter-group">
+                    <select id="brand-filter" onchange="applyFilters()">
+                        <option value="">Tất cả thương hiệu</option>
+                        <option value="Apple">Apple</option>
+                        <option value="Asus ROG">Asus ROG</option>
+                        <option value="Razer">Razer</option>
+                        <option value="Alienware">Alienware</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <select id="sort-filter" onchange="applyFilters()">
+                        <option value="default">Sắp xếp: Mặc định</option>
+                        <option value="price-asc">Giá: Thấp đến Cao</option>
+                        <option value="price-desc">Giá: Cao đến Thấp</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Danh Sách Sản Phẩm -->
+            <div class="product-grid" id="product-list">
+                <!-- Render bằng JavaScript -->
+            </div>
+        </section>
+
+        <!-- VIEW 2: LỊCH SỬ MUA HÀNG -->
+        <section id="history-view" class="view-section">
+            <h2 style="color: var(--accent-gold); margin-bottom: 20px;">Lịch Sử Đơn Hàng</h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Mã Đơn</th>
+                            <th>Ngày Đặt</th>
+                            <th>Sản Phẩm</th>
+                            <th>Tổng Tiền</th>
+                            <th>Trạng Thái</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-table-body">
+                        <!-- Render bằng JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- VIEW 3: TRANG QUẢN TRỊ (ADMIN CRUD) -->
+        <section id="admin-view" class="view-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="color: var(--accent-gold);">Quản Lý Sản Phẩm</h2>
+                <button class="btn" onclick="openProductModal()">+ Thêm Sản Phẩm Mới</button>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Hình Ảnh</th>
+                            <th>Tên Sản Phẩm</th>
+                            <th>Thương Hiệu</th>
+                            <th>Giá Bán</th>
+                            <th>Tồn Kho</th>
+                            <th>Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-table-body">
+                        <!-- Render bằng JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- MODAL 1: GIỎ HÀNG -->
+    <div class="modal" id="cart-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="toggleCartModal()">&times;</span>
+            <h2 style="color: var(--accent-gold); margin-bottom: 20px;">Giỏ Hàng Của Bạn</h2>
+            <div id="cart-items">
+                <!-- Render các món trong giỏ -->
+            </div>
+            <div
+                style="margin-top: 20px; border-top: 1px solid var(--border-gold); padding-top: 15px; text-align: right;">
+                <p style="font-size: 18px; font-weight: bold;">Tổng tiền: <span id="cart-total"
+                        style="color: var(--accent-gold);">0 ₫</span></p>
+                <button class="btn" style="width: 100%; margin-top: 15px;" onclick="openCheckoutModal()">Tiến Hành Thanh
+                    Toán</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL THANH TOÁN -->
+    <div class="modal" id="checkout-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeCheckoutModal()">&times;</span>
+            <h2 style="color: var(--accent-gold); margin-bottom: 20px;">Thông Tin Thanh Toán</h2>
+            <form id="checkout-form" onsubmit="processCheckout(event)">
+                <div class="form-group">
+                    <label>Họ và Tên</label>
+                    <input type="text" required id="cust-name" placeholder="Nguyễn Văn A">
+                </div>
+                <div class="form-group">
+                    <label>Số Điện Thoại</label>
+                    <input type="tel" required id="cust-phone" placeholder="0901234567">
+                </div>
+                <div class="form-group">
+                    <label>Địa Chỉ Giao Hàng</label>
+                    <input type="text" required id="cust-address" placeholder="123 Đường Luxury, Q.1, TP.HCM">
+                </div>
+                <div class="form-group">
+                    <label>Phương Thức Thanh Toán</label>
+                    <select id="cust-payment">
+                        <option value="COD">Thanh toán khi nhận hàng (COD)</option>
+                        <option value="BANK">Chuyển khoản Ngân hàng (QR Code)</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn" style="width: 100%;">Xác Nhận Đặt Hàng</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: CHI TIẾT SẢN PHẨM -->
+    <div class="modal" id="detail-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeDetailModal()">&times;</span>
+            <div id="detail-content">
+                <!-- Render chi tiết sản phẩm -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: THÊM / SỬA SẢN PHẨM (ADMIN) -->
+    <div class="modal" id="product-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeProductModal()">&times;</span>
+            <h2 id="modal-product-title" style="color: var(--accent-gold); margin-bottom: 20px;">Thêm Sản Phẩm Mới</h2>
+            <form id="product-form" onsubmit="saveProduct(event)">
+                <input type="hidden" id="prod-id">
+                <div class="form-group">
+                    <label>Tên Sản Phẩm</label>
+                    <input type="text" id="prod-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Thương Hiệu</label>
+                    <select id="prod-brand">
+                        <option value="Apple">Apple</option>
+                        <option value="Asus ROG">Asus ROG</option>
+                        <option value="Razer">Razer</option>
+                        <option value="Alienware">Alienware</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Giá Bán (VNĐ)</label>
+                    <input type="number" id="prod-price" required>
+                </div>
+                <div class="form-group">
+                    <label>Giá Cũ (Gạch ngang)</label>
+                    <input type="number" id="prod-old-price">
+                </div>
+                <div class="form-group">
+                    <label>URL Hình Ảnh</label>
+                    <input type="url" id="prod-image" required>
+                </div>
+                <div class="form-group">
+                    <label>Thông Số Cấu Hình Tóm Tắt</label>
+                    <input type="text" id="prod-specs" placeholder="Ví dụ: Core i9 / 32GB RAM / RTX 4090" required>
+                </div>
+                <div class="form-group">
+                    <label>Số Lượng Tồn Kho</label>
+                    <input type="number" id="prod-stock" required value="10">
+                </div>
+                <button type="submit" class="btn" style="width: 100%;">Lưu Sản Phẩm</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">Thông báo hệ thống</div>
+
+    <footer>
+        &copy; 2026 AURA Luxury PC Store - Designed with Vanilla HTML, CSS & JavaScript.
+    </footer>
+
+    <!-- Liên kết đến file JS riêng -->
+    <script src="script.js"></script>
+</body>
+
+</html>
